@@ -2,4 +2,4 @@
 # Runs to-do list
 
 # "$@" placeholder for command line arguments
-python todo.py "$@" 
+python3 todo.py "$@" 
