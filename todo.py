@@ -2,31 +2,30 @@ import sys
 import datetime
 
 def main():
-    # Incorrect nunmber of arguments
-    #if len(sys.argv) == 1:
-        #help()
     try:
-        # User command
-        command = sys.argv[1]
+        # Load todo list into dictionary
+        todoList = {}
+        load(todoList)
 
-        # Add new todo item
-        if command == "add" and len(sys.argv) != 3:
+        # TEST dictionary
+        print(todoList)
+
+        # User command
+        if len(sys.argv) == 0:
             help()
-        elif command == "add":
+        else:
+            command = sys.argv[1]
+
+        # Commands
+        if command == "add" and len(sys.argv) == 3: # Add new todo item
             newTodo = sys.argv[2]
-            add(newTodo)
-            
-        # Print help menu
-        if command == "help":
+            add(newTodo)    
+        elif command == "help": # Print help menu
             help()
         
         # Check successful add()
-        with open("todo.txt", "r") as file:
-            print(file.read())
-
-        # Test successful run
-        print("success")
-        sys.exit(0)
+        #with open("todo.txt", "r") as file:
+            #print(file.read())
     
     except Exception as e:
         print(f"Error: {e}")
@@ -34,6 +33,7 @@ def main():
 
 # Add new todo item
 def add(newItem):
+    # with open() as file properly opens and closes file
     with open("todo.txt", "a") as file:
         file.write(newItem)
         file.write("\n")
@@ -41,13 +41,17 @@ def add(newItem):
     print(f"Successfully added: {newItem}")
 
 # Loads todo list into dictionary
-# TODO: 
-def load():
-    with open("todo.txt", "r") as file:
-        itemNum = 1
-        for line in file:
-            line = line.strip("\n")
-
+def load(todoList):
+    try:
+        with open("todo.txt", "r") as file:
+            itemNum = 1
+            for line in file:
+                line = line.strip("\n")
+                print(line)
+                todoList.update({itemNum: line})
+                itemNum = itemNum + 1
+    except:
+        print(f"No pending items")
 
 # Displays usage
 def help():
