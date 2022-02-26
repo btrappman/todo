@@ -5,8 +5,7 @@ def main():
     try:
         # Load todo list into dictionary
         todoList = {}
-        load(todoList)
-
+        
         # User command
         if len(sys.argv) == 0:
             help()
@@ -17,8 +16,11 @@ def main():
         if command == "add" and len(sys.argv) == 3: # Add new todo item
             newTodo = sys.argv[2]
             add(newTodo)    
-        elif command == "ls":
+        elif command == "ls" and len(sys.argv) == 2: # Lists current items
             ls(todoList)
+        elif command == "rm" and len(sys.argv) == 3: # Deletes item 
+            numItem = sys.argv[2]
+            rm(numItem, todoList)
         elif command == "help": # Print help menu
             help()
         
@@ -49,15 +51,35 @@ def load(todoList):
                 todoList.update({itemNum: line})
                 itemNum = itemNum + 1
     except:
-        print(f"Could not access todo list")
+        print(f"No pending todo items")
 
 # Prints todo list
 def ls(todoList):
     try:
+        load(todoList)
         for x, y in todoList.items():
             print(f"{x}: {y}")
     except Exception as e:
-        print(f"No current items")
+        print(f"Error: could not access todo list")
+
+# Deletes todo item
+def rm(itemNum, todoList):
+    try:
+        load(todoList)
+        itemNum = int(itemNum)
+        with open("todo.txt", "r+") as file:
+            lines = file.readlines()
+            file.seek(0)
+
+            # Re-write items to file, omitting desired item to delete
+            for i in lines:
+                if i.strip("\n") != todoList[itemNum]:
+                    file.write(i)
+            
+            # Deletes original (left over) list
+            file.truncate();
+    except Exception as e:
+        print(f"Item #{itemNum} does not exist. Nothing deleted.")    
 
 # Displays usage
 def help():
@@ -65,10 +87,13 @@ def help():
     help = """Usage:
     $ ./todo add "todo item"        # Add new todo item
     $ ./todo ls                     # Lists current todo items
+    $ ./todo rm NUMBER             # Deletes todo item
     $ ./todo help                   # Usage"""
 
     print(help)
     sys.exit(1)
+
+# TODO: purge # completed
 
 # Runs main
 if __name__ == "__main__":
