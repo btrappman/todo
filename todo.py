@@ -21,6 +21,9 @@ def main():
         elif command == "rm" and len(sys.argv) == 3: # Deletes item 
             numItem = sys.argv[2]
             rm(numItem, todoList)
+        #elif command == "done" and len(sys.argv) ==3: # Mark item as complete
+            #numItem = sys.argv[2]
+            #done()
         elif command == "help": # Print help menu
             help()
         else:
@@ -55,22 +58,6 @@ def load(todoList):
     except:
         print(f"No pending todo items")
 
-# Updates to do list
-def update(itemNum, todoList):
-    load(todoList)
-    itemNum = int(itemNum)
-    with open("todo.txt", "r+") as file:
-        lines = file.readlines()
-        file.seek(0)
-
-        # Re-write items to file, omitting desired item to delete
-        for i in lines:
-            if i.strip("\n") != todoList[itemNum]:
-                file.write(i)
-        
-        # Deletes original (left over) list
-        file.truncate()
-
 # Prints todo list
 def ls(todoList):
     try:
@@ -83,11 +70,28 @@ def ls(todoList):
 # Deletes todo item
 def rm(itemNum, todoList):
     try:
-        update(itemNum, todoList)
+        load(todoList)
+        itemNum = int(itemNum)
+        with open("todo.txt", "r+") as file:
+            lines = file.readlines()
+            file.seek(0)
+
+            # Re-write items to file, omitting desired item to delete
+            for i in lines:
+                if i.strip("\n") != todoList[itemNum]:
+                    file.write(i)
+            
+            # Deletes original (left over) list
+            file.truncate()
+
         print(f"Successfully deleted item #{itemNum}")
 
     except Exception as e:
         print(f"Item #{itemNum} does not exist. Nothing deleted.")   
+
+#def done(itemNum, todoList):
+    #try:
+        #update(itemNum, todoList)
 
 # Displays usage
 def help():
