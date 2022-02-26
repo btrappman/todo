@@ -7,9 +7,6 @@ def main():
         todoList = {}
         load(todoList)
 
-        # TEST dictionary
-        print(todoList)
-
         # User command
         if len(sys.argv) == 0:
             help()
@@ -20,6 +17,8 @@ def main():
         if command == "add" and len(sys.argv) == 3: # Add new todo item
             newTodo = sys.argv[2]
             add(newTodo)    
+        elif command == "ls":
+            ls(todoList)
         elif command == "help": # Print help menu
             help()
         
@@ -47,17 +46,25 @@ def load(todoList):
             itemNum = 1
             for line in file:
                 line = line.strip("\n")
-                print(line)
                 todoList.update({itemNum: line})
                 itemNum = itemNum + 1
     except:
-        print(f"No pending items")
+        print(f"Could not access todo list")
+
+# Prints todo list
+def ls(todoList):
+    try:
+        for x, y in todoList.items():
+            print(f"{x}: {y}")
+    except Exception as e:
+        print(f"No current items")
 
 # Displays usage
 def help():
     # Triple quotes allow strings that span multiple lines
     help = """Usage:
     $ ./todo add "todo item"        # Add new todo item
+    $ ./todo ls                     # Lists current todo items
     $ ./todo help                   # Usage"""
 
     print(help)
